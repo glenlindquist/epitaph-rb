@@ -5,17 +5,24 @@ class Civilization extends React.Component {
     super(props);
   }
 
+  componentDidUpdate(){
+    // @TODO: currently the whole app updates every tick
+    // Is there a way to extract stardate state in a way that won't
+    // force app to update (due to state change of stardate)
+    console.log("civ updated.");
+  }
+
   render() {
 
-    let techCount = this.props.available_technologies.length
+    let techCount = this.props.availableTechnologies.length
 
-    let techSentence = this.props.available_technologies.map((tech, i)=>{
+    let techSentence = this.props.availableTechnologies.map((tech, i)=>{
       if (i === 0) {
         // beginning
         return (
           <span key={tech}>
             <span key={tech + "sentence"} className="techSentenceStart">Would you like to teach the {this.props.name} the secrets of </span>
-            <a key={tech + "link"} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</a>
+            <span className="techLink" key={tech + "link"} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</span>
           </span>
         )
       } else if (i === techCount - 1) {
@@ -23,7 +30,7 @@ class Civilization extends React.Component {
         return (
           <span key={tech}>
             {techCount == 2 ? <span key={tech + "joiner"}> or </span> : <span key={tech + "joiner"}>, or </span>}
-            <a key={tech + "link"} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</a>
+            <span className="techLink" key={tech + "link"} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</span>
           </span>
         )
       } else {
@@ -31,12 +38,11 @@ class Civilization extends React.Component {
         return (
           <span key={tech}>
             <span key={tech + "joiner"}>, </span>
-            <a key={tech + "link"} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</a>
+            <span className="techLink" key={tech + "link"} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</span>
           </span>
         )
       }
-    });
-    let butt = "butt";
+    }).concat(<span key="q">?</span>);
 
     return (
       <div>
@@ -44,23 +50,20 @@ class Civilization extends React.Component {
           <h3>Civ: {this.props.name}</h3>
         </div>
         <div className="historyContainer">
-          
+          {this.props.history.map((event, i)=>{
+            return(
+              <div key={i} className="historyEvent">
+                {event}
+              </div>
+            )
+          })}
         </div>
         <div className="techContainer">
-          {techSentence}
-          {!!this.props.available_technologies.length ? "?" : null}
-          {this.props.available_technologies.map((tech, i)=>
-            ""
-            // i === 0 ? (
-            //   <span key={tech} className="sentence">
-            //     Would you like to teach the {this.props.name} the secrets of 
-            //     <a key={tech} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</a>
-            //   </span>
-            // ) : (
-            //   <span key={tech}>
-            //     <a key={tech} onClick={() => this.props.onTechnologyClick(this.props.name, tech)}>{tech}</a>
-            //   </span>
-            // )
+          {( this.props.canInterfere 
+            ? 
+              techCount > 0 ? techSentence : "No available technologies."
+            :
+              "Cannot interfere again until " + this.props.nextInterference + "."
           )}
         </div>
       </div>
