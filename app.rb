@@ -223,7 +223,32 @@ module GameData
         description: "The $CIV use stone tools for hunting the wild $BEAST.",
         prereqs: [],
       },
-      
+      {
+        name: "butt-stuff",
+        event_chances: {
+          overhunting:  (+4.0 / 1000),
+          overfishing:  (-3.0 / 1000),
+          crop_failure: (-3.0 / 1000),
+          food_illness: (+1.0 / 1000),
+          pets:         (+3.0 / 1000),
+          conqueror:    (+1.0 / 1000)
+        },
+        description: "The $CIV use stone tools for hunting the wild $BEAST.",
+        prereqs: [],
+      },
+      {
+        name: "chiropractice",
+        event_chances: {
+          overhunting:  (+4.0 / 1000),
+          overfishing:  (-3.0 / 1000),
+          crop_failure: (-3.0 / 1000),
+          food_illness: (+1.0 / 1000),
+          pets:         (+3.0 / 1000),
+          conqueror:    (+1.0 / 1000)
+        },
+        description: "The $CIV use stone tools for hunting the wild $BEAST.",
+        prereqs: [],
+      },
     ]
   end
 

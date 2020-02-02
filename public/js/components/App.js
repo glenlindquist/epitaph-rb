@@ -28,13 +28,12 @@ class App extends React.Component {
       return response.json();
     })
     .then((newCivilization) => {
-      // if (!!this.civilizationByName(newCivilization.name)){
-      //   // retry if civ with same name exists
-      //   this.newCivilization();
-      // } else {
-      //   this.updateCivilizations(newCivilization);
-      // }
-      this.updateCivilizations(newCivilization);
+      if (!!this.civilizationByName(newCivilization.name)){
+        // retry if civ with same name exists
+        this.newCivilization();
+      } else {
+        this.updateCivilizations(newCivilization);
+      }
     });
   }
 
@@ -97,9 +96,9 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {this.state.civilizations.map((civilization, i) => 
+        {this.state.civilizations.map((civilization) =>
           <Civilization
-            key={i}
+            key={civilization.name}
             onTechnologyClick={(civName, techName) => this.acquireTechnology(civName, techName)}
             name={civilization.name}
             available_technologies={civilization.available_technologies}
