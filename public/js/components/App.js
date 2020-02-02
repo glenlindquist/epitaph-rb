@@ -10,7 +10,9 @@ class App extends React.Component {
     };
     this.newCivilization = this.newCivilization.bind(this);
     this.triggerEvent = this.triggerEvent.bind(this);
-
+    this.acquireTechnology = this.acquireTechnology.bind(this);
+    this.civilizationByName = this.civilizationByName.bind(this);
+    this.updateCivilizations = this.updateCivilizations.bind(this);
   }
 
   componentDidMount(){
@@ -18,7 +20,6 @@ class App extends React.Component {
   }
 
   componentDidUpdate(){
-    console.log("UPDATE");
   }
 
   newCivilization(){
@@ -26,11 +27,14 @@ class App extends React.Component {
     .then((response) => {
       return response.json();
     })
-    .then((new_civilization) => {
-      this.setState({
-        civilizations: this.state.civilizations.concat(new_civilization) 
-      });
-      this.forceUpdate();
+    .then((newCivilization) => {
+      // if (!!this.civilizationByName(newCivilization.name)){
+      //   // retry if civ with same name exists
+      //   this.newCivilization();
+      // } else {
+      //   this.updateCivilizations(newCivilization);
+      // }
+      this.updateCivilizations(newCivilization);
     });
   }
 
@@ -50,11 +54,56 @@ class App extends React.Component {
     });
   }
 
+  civilizationByName(civName){
+    return this.state.civilizations.find(civ => civ.name === civName);
+  }
+
+  updateCivilizations(newCiv){
+    if(!!this.civilizationByName(newCiv.name)){
+      // if existing civ
+      let updated_civs = this.state.civilizations.
+      filter(civ => civ.name != newCiv.name).
+      concat(newCiv)
+
+      this.setState({civilizations: updated_civs});
+    } else {
+      //if new civ
+      this.setState({
+        civilizations: this.state.civilizations.concat(newCiv) 
+      });
+    }
+
+  }
+
+  acquireTechnology(civName, techName){
+    console.log(this.civilizationByName(civName))
+    fetch('/acquire_technology', {
+      method: "post",
+      body: JSON.stringify({
+        civilization: this.civilizationByName(civName),
+        technology_name: techName
+      }),
+      headers: { 'Content-type': 'application/json' }
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      this.updateCivilizations(data.civilization);
+      // @TODO: update text w/ data.text
+    });
+  }
+
   render() {
     return (
       <div>
-        {this.state.civilizations.map((civilization) => 
-          <Civilization key={civilization.name} {...civilization}/>
+        {this.state.civilizations.map((civilization, i) => 
+          <Civilization
+            key={i}
+            onTechnologyClick={(civName, techName) => this.acquireTechnology(civName, techName)}
+            name={civilization.name}
+            available_technologies={civilization.available_technologies}
+          />
         )}
         <h1> Hey :)</h1>
       </div>
