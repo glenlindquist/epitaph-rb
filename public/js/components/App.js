@@ -1,13 +1,13 @@
 import React from 'react';
 import Civilization from './Civilization';
-import * as Tone from "tone";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       civilizations: [],
-      stardate: Math.floor(Math.random() * 99999) + 3000
+      stardate: Math.floor(Math.random() * 99999) + 3000,
+      soundOn: false
     };
     this.newCivilization = this.newCivilization.bind(this);
     this.triggerEvent = this.triggerEvent.bind(this);
@@ -15,14 +15,15 @@ class App extends React.Component {
     this.civilizationByName = this.civilizationByName.bind(this);
     this.updateCivilizations = this.updateCivilizations.bind(this);
     this.tick = this.tick.bind(this);
+    this.activeCivCount = this.activeCivCount.bind(this);
   }
 
   componentDidMount(){
-    Tone.start()
     this.timerID = setInterval(
       () => this.tick(),
       1000
     );
+
     this.newCivilization();
   }
 
@@ -34,22 +35,23 @@ class App extends React.Component {
   }
 
   playSound(pitch){
-    const synth = new Tone.Synth().toMaster();
-    synth.triggerAttackRelease(pitch, "8n")
+    this.props.synth.triggerAttackRelease(pitch, "8n")
   }
-
 
   tick(){
     // MAIN GAME UPDATE FUNCTION
     // @TODO: refactor
-    this.state.civilizations.forEach((civ)=>{
+    this.state.civilizations
+      .filter((civ)=> civ.status != "extinct")
+      .forEach((civ)=>{
       let eventOccurred = false;
 
       // randomly go through events and compare to event chance (do not select in same order)
       let events = Object.keys(civ.event_chances);
       events = events.sort(() => Math.random() - 0.5);
       for (const event of events){
-        if (Math.random() < civ.event_chances[event]) {
+        if (false) {
+        // if (Math.random() < civ.event_chances[event]) {
           this.triggerEvent(civ.name, event);
           eventOccurred = true;
           console.log('event');
@@ -68,9 +70,25 @@ class App extends React.Component {
   
     });
 
+    // make new civs
+    let newCivChance = !!this.activeCivCount() ? 0.005 : 0.20
+    if (Math.random() < newCivChance) {
+      this.newCivilization();
+    }
+
     this.setState((state, props) => ({
       stardate: state.stardate + 1
     }));
+  }
+
+  activeCivCount(){
+    let count = 0;
+    this.state.civilizations.forEach((civ) => {
+      if (civ.status === "active") {
+        count += 1;
+      }
+    });
+    return count;
   }
 
   newCivilization(){
@@ -105,7 +123,6 @@ class App extends React.Component {
     .then((civilization) => {
       this.updateCivilizations(civilization);
       this.playSound(civilization.notification_pitch)
-
     });
   }
 
@@ -118,6 +135,7 @@ class App extends React.Component {
       civilizations: state.civilizations.
         filter(civ => civ.name != newCiv.name).
         concat(newCiv)
+        .slice().sort((civ1, civ2) => civ2.discovery_date - civ1.discovery_date)
     }));
   }
 
@@ -149,24 +167,30 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <div>
-          Stardate {this.state.stardate}
+      <div className="container-fluid">
+        <div className="stardate-clock">
+          Stardate <span className="highlight">{this.state.stardate}</span>
         </div>
-        {this.state.civilizations.map((civilization) =>{
-          let nextInterference = civilization.last_interference + 30;
-          return (
-            <Civilization
-              key={civilization.name}
-              onTechnologyClick={(civName, techName) => this.acquireTechnology(civName, techName, true)}
-              name={civilization.name}
-              availableTechnologies={civilization.available_technologies}
-              history={civilization.history}
-              canInterfere={this.state.stardate >= nextInterference}
-              nextInterference={nextInterference}
-            />
-          );
-        })}
+        <div className="all-civs-container">
+          {this.state.civilizations.map((civilization, i) =>{
+            let nextInterference = civilization.last_interference + 30;
+            return (
+              <Civilization
+                key={civilization.name}
+                onTechnologyClick={(civName, techName) => this.acquireTechnology(civName, techName, true)}
+                name={civilization.name}
+                availableTechnologies={civilization.available_technologies}
+                status={civilization.status}
+                history={civilization.history}
+                canInterfere={this.state.stardate >= nextInterference}
+                nextInterference={nextInterference}
+                position={i}
+                color={civilization.color}
+                size={civilization.size}
+              />
+            );
+          })}
+        </div>
       </div>
     );
   }
