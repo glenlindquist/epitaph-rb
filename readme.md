@@ -5,5 +5,6 @@ The original game was written in Clojure and has a lot more interesting things g
 
 This version is a work-in-progress that does not yet have all of the specific event text correctly set.
 (You'll notice every negative event ends with a giant rock destroying the planet.)
+
 [Play my version here.](https://epitaph-rb.herokuapp.com/).
 
