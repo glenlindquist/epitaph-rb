@@ -1,0 +1,62 @@
+Arguments: 
+  /usr/local/Cellar/node/13.11.0/bin/node /usr/local/Cellar/yarn/1.22.4/libexec/bin/yarn.js install
+
+PATH: 
+  /Users/glenlindquist/.rbenv/shims:/Users/glenlindquist/.rbenv/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/Library/Apple/bin:/usr/local/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/glenlindquist/.rbenv/bin
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  13.11.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/glenlindquist/Documents/projects/epitaph-rb/package.json: Unexpected token } in JSON at position 795
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:310:30)
+      at /usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "epitaph-rb",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "build": "webpack --mode production",
+      "build-dev": "webpack --mode development",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Glen Lindquist",
+    "license": "ISC",
+    "devDependencies": {
+      "@babel/cli": "^7.1.0",
+      "@babel/core": "^7.1.0",
+      "@babel/preset-env": "^7.1.0",
+      "@babel/preset-react": "^7.0.0",
+      "babel-loader": "^8.0.2",
+      "css-loader": "^1.0.0",
+      "style-loader": "^0.23.0",
+      "webpack": "^4.41.5",
+      "webpack-cli": "^3.1.1"
+    },
+    "dependencies": {
+      "babel-preset-react": "^6.24.1",
+      "react": "^16.5.2",
+      "react-dom": "^16.5.2",
+      "tone": "^13.8.25",
+      "minimist": ">=1.2.3", 
+      "acorn": ">=6.4.1",
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

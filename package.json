@@ -25,6 +25,8 @@
     "babel-preset-react": "^6.24.1",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "tone": "^13.8.25"
+    "tone": "^13.8.25",
+    "minimist": ">=1.2.3", 
+    "acorn": ">=6.4.1"
   }
 }
